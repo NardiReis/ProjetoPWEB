@@ -48,16 +48,13 @@ function addItem(item) {
 }
 
 function appendItemToColumn(item, status) {
-    switch (status) {
-        case 'conteudo-estudar':
-            itensConteudo.appendChild(item);
-            break;
-        case 'em-progresso':
-            itensProgresso.appendChild(item);
-            break;
-        case 'concluido':
-            itensConcluido.appendChild(item);
-            break;
+    // Apende o item na coluna correspondente ao status
+    if (status === 'conteudo-estudar') {
+        itensConteudo.appendChild(item);
+    } else if (status === 'em-progresso') {
+        itensProgresso.appendChild(item);
+    } else if (status === 'concluido') {
+        itensConcluido.appendChild(item);
     }
 }
 
@@ -70,7 +67,7 @@ function addDragAndDropEvents(item) {
         const draggingItem = document.querySelector('.dragging');
         if (draggingItem) {
             draggingItem.classList.remove('dragging');
-            const newStatus = draggingItem.parentElement.id; // Atualizando o status com a coluna onde o item foi solto
+            const newStatus = draggingItem.parentElement.id; // Obtém o id da coluna como novo status
             updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
             console.log('Item movido para:', newStatus); // Log de depuração
         }
@@ -78,18 +75,18 @@ function addDragAndDropEvents(item) {
 
     columns.forEach(column => {
         column.addEventListener('dragover', (e) => {
-            e.preventDefault(); // Permitir o drop
+            e.preventDefault(); // Permite que o item seja arrastado sobre a coluna
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
-                column.appendChild(draggingItem); // Realizando o arraste visual
+                column.appendChild(draggingItem); // Faz o item "flutuar" sobre a coluna
             }
         });
 
         column.addEventListener('drop', () => {
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
-                const newStatus = column.id; // Atualizando o status baseado na coluna
-                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualizando o status do item no localStorage
+                const newStatus = column.id; // Obtém o id da coluna como novo status
+                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
             }
         });
     });
@@ -100,8 +97,8 @@ function updateItemStatus(id, status) {
     const updatedItem = items.find(item => item.id == id);
 
     if (updatedItem) {
-        updatedItem.status = status; // Atualizando o status do item
-        // Salvando os itens atualizados no localStorage
+        updatedItem.status = status; // Atualiza o status do item
+        // Atualiza a lista de itens no localStorage
         localStorage.setItem('items', JSON.stringify(items));
         console.log('Status do item atualizado no localStorage:', id, status); // Log de depuração
     }
@@ -109,8 +106,8 @@ function updateItemStatus(id, status) {
 
 function saveItem(item) {
     const items = JSON.parse(localStorage.getItem('items')) || [];
-    items.push(item); // Adicionando o novo item ao array
-    localStorage.setItem('items', JSON.stringify(items)); // Salvando no localStorage
+    items.push(item); // Adiciona o novo item à lista
+    localStorage.setItem('items', JSON.stringify(items)); // Salva os itens no localStorage
     console.log('Itens salvos no localStorage:', items); // Log de depuração
 }
 
@@ -118,15 +115,15 @@ function loadItems() {
     const items = JSON.parse(localStorage.getItem('items')) || [];
     clearColumns(); // Limpa as colunas antes de carregar os itens
     items.forEach(item => {
-        addItem(item); // Adiciona o item na coluna correspondente ao seu status
+        addItem(item); // Adiciona o item na coluna correta de acordo com seu status
     });
     console.log('Itens carregados do localStorage:', items); // Log de depuração
 }
 
 function deleteItem(id) {
-    const items = JSON.parse(localStorage.getItem('items')) || [];
-    const updatedItems = items.filter(item => item.id != id);
-    localStorage.setItem('items', JSON.stringify(updatedItems));
+    let items = JSON.parse(localStorage.getItem('items')) || [];
+    items = items.filter(item => item.id != id); // Remove o item da lista
+    localStorage.setItem('items', JSON.stringify(items)); // Atualiza o localStorage
     document.querySelector(`[data-id='${id}']`).remove();
     console.log('Item deletado:', id); // Log de depuração
 }
@@ -168,6 +165,6 @@ function clearColumns() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadItems(); // Carrega os itens do localStorage ao carregar a página
+    loadItems(); // Carrega os itens do localStorage quando a página é carregada
     console.log('Página carregada e itens carregados do localStorage.'); // Log de depuração
 });
