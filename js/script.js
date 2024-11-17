@@ -1,4 +1,3 @@
-// Seleção de elementos da DOM
 const itemForm = document.getElementById('item-form');
 const itensConteudo = document.getElementById('itens-conteudo');
 const itensProgresso = document.getElementById('itens-progresso');
