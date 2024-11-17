@@ -20,7 +20,7 @@ itemForm.addEventListener('submit', (e) => {
         prioridade,
         dataVencimento,
         responsaveis,
-        status: 'conteudo-estudar'
+        status: 'conteudo-estudar' // Status inicial
     };
 
     addItem(item);
@@ -48,12 +48,16 @@ function addItem(item) {
 }
 
 function appendItemToColumn(item, status) {
-    if (status === 'conteudo-estudar') {
-        itensConteudo.appendChild(item);
-    } else if (status === 'em-progresso') {
-        itensProgresso.appendChild(item);
-    } else if (status === 'concluido') {
-        itensConcluido.appendChild(item);
+    switch (status) {
+        case 'conteudo-estudar':
+            itensConteudo.appendChild(item);
+            break;
+        case 'em-progresso':
+            itensProgresso.appendChild(item);
+            break;
+        case 'concluido':
+            itensConcluido.appendChild(item);
+            break;
     }
 }
 
@@ -96,13 +100,10 @@ function updateItemStatus(id, status) {
     const updatedItem = items.find(item => item.id == id);
 
     if (updatedItem) {
-        updatedItem.status = status;
-        items = items.filter(item => item.id != id);
-        items.push(updatedItem);
+        updatedItem.status = status; // Atualizando o status do item
+        localStorage.setItem('items', JSON.stringify(items));
+        console.log('Status atualizado:', id, status); // Log de depuração
     }
-
-    localStorage.setItem('items', JSON.stringify(items));
-    console.log('Status atualizado:', id, status); // Log de depuração
 }
 
 function saveItem(item) {
