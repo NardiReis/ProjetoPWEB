@@ -64,22 +64,29 @@ function addDragAndDropEvents(item) {
 
     item.addEventListener('dragend', () => {
         const draggingItem = document.querySelector('.dragging');
-        draggingItem.classList.remove('dragging');
-        const newStatus = draggingItem.parentElement.id;
-        updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+        if (draggingItem) {
+            draggingItem.classList.remove('dragging');
+            const newStatus = draggingItem.parentElement.id;
+            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+            console.log('Item movido para:', newStatus); // Log de depuração
+        }
     });
 
     columns.forEach(column => {
         column.addEventListener('dragover', (e) => {
             e.preventDefault();
             const draggingItem = document.querySelector('.dragging');
-            column.appendChild(draggingItem);
+            if (draggingItem) {
+                column.appendChild(draggingItem);
+            }
         });
 
         column.addEventListener('drop', () => {
             const draggingItem = document.querySelector('.dragging');
-            const newStatus = column.id;
-            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+            if (draggingItem) {
+                const newStatus = column.id;
+                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+            }
         });
     });
 }
@@ -89,7 +96,10 @@ function updateItemStatus(id, status) {
     const updatedItems = items.map(item => {
         if (item.id == id) {
             item.status = status;
-            setColorBasedOnDate(document.querySelector(`[data-id='${id}']`), item.dataVencimento, status);
+            const itemDiv = document.querySelector(`[data-id='${id}']`);
+            if (itemDiv) {
+                setColorBasedOnDate(itemDiv, item.dataVencimento, status);
+            }
         }
         return item;
     });
