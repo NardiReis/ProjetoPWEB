@@ -1,7 +1,7 @@
 const itemForm = document.getElementById('item-form');
-const itensConteudo = document.getElementById('itens-conteudo');
-const itensProgresso = document.getElementById('itens-progresso');
-const itensConcluido = document.getElementById('itens-concluido');
+const itensConteudo = document.getElementById('conteudo-estudar');
+const itensProgresso = document.getElementById('em-progresso');
+const itensConcluido = document.getElementById('concluido');
 const searchInput = document.getElementById('search');
 const columns = [itensConteudo, itensProgresso, itensConcluido];
 
