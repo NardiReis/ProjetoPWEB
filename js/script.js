@@ -139,9 +139,28 @@ function loadItems() {
     const items = JSON.parse(localStorage.getItem('items')) || [];
     clearColumns(); // Limpa as colunas antes de adicionar os itens
 
+    // Carrega os itens separadamente para cada coluna com base no status
     items.forEach(item => {
-        addItem(item); // Adiciona cada item na coluna correspondente
+        appendItemToColumn(createItemElement(item), item.status);
     });
+}
+
+// Função auxiliar para criar o elemento do item (HTML)
+function createItemElement(item) {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('item');
+    itemDiv.setAttribute('draggable', 'true');
+    itemDiv.setAttribute('data-id', item.id);
+    itemDiv.innerHTML = `
+        <h3>${item.titulo}</h3>
+        <p>${item.descricao}</p>
+        <p>Prioridade: ${item.prioridade}</p>
+        <p>Data de Vencimento: ${item.dataVencimento}</p>
+        <p>Responsáveis: ${item.responsaveis}</p>
+        <button onclick="deleteItem(${item.id})">🗑️</button>
+    `;
+    setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
+    return itemDiv;
 }
 
 // Função para excluir um item
@@ -193,5 +212,4 @@ function clearColumns() {
 
 // Ao carregar a página, carregue os itens do localStorage
 document.addEventListener('DOMContentLoaded', () => {
-    loadItems(); // Carrega os itens do localStorage ao carregar a página
-});
+    loadItems(); // Carrega os itens do
