@@ -92,18 +92,16 @@ function addDragAndDropEvents(item) {
 }
 
 function updateItemStatus(id, status) {
-    const items = JSON.parse(localStorage.getItem('items')) || [];
-    const updatedItems = items.map(item => {
-        if (item.id == id) {
-            item.status = status;
-            const itemDiv = document.querySelector(`[data-id='${id}']`);
-            if (itemDiv) {
-                setColorBasedOnDate(itemDiv, item.dataVencimento, status);
-            }
-        }
-        return item;
-    });
-    localStorage.setItem('items', JSON.stringify(updatedItems));
+    let items = JSON.parse(localStorage.getItem('items')) || [];
+    const updatedItem = items.find(item => item.id == id);
+
+    if (updatedItem) {
+        updatedItem.status = status;
+        items = items.filter(item => item.id != id);
+        items.push(updatedItem);
+    }
+
+    localStorage.setItem('items', JSON.stringify(items));
     console.log('Status atualizado:', id, status); // Log de depuração
 }
 
@@ -167,4 +165,7 @@ function clearColumns() {
     itensConcluido.innerHTML = '';
 }
 
-document.addEventListener('DOMContentLoaded', loadItems);
+document.addEventListener('DOMContentLoaded', () => {
+    loadItems();
+    console.log('Página carregada e itens carregados do localStorage.'); // Log de depuração
+});
