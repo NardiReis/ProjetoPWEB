@@ -70,25 +70,25 @@ function addDragAndDropEvents(item) {
         const draggingItem = document.querySelector('.dragging');
         if (draggingItem) {
             draggingItem.classList.remove('dragging');
-            const newStatus = draggingItem.parentElement.id;
-            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualizando o status no localStorage
+            const newStatus = draggingItem.parentElement.id; // Atualizando o status com a coluna onde o item foi solto
+            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
             console.log('Item movido para:', newStatus); // Log de depuração
         }
     });
 
     columns.forEach(column => {
         column.addEventListener('dragover', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Permitir o drop
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
-                column.appendChild(draggingItem);
+                column.appendChild(draggingItem); // Realizando o arraste visual
             }
         });
 
         column.addEventListener('drop', () => {
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
-                const newStatus = column.id; // Pegando o novo status baseado na coluna
+                const newStatus = column.id; // Atualizando o status baseado na coluna
                 updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualizando o status do item no localStorage
             }
         });
