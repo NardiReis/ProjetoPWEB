@@ -63,9 +63,10 @@ function addDragAndDropEvents(item) {
     });
 
     item.addEventListener('dragend', () => {
-        item.classList.remove('dragging');
-        const newStatus = item.parentElement.id;
-        updateItemStatus(item.getAttribute('data-id'), newStatus);
+        const draggingItem = document.querySelector('.dragging');
+        draggingItem.classList.remove('dragging');
+        const newStatus = draggingItem.parentElement.id;
+        updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
     });
 
     columns.forEach(column => {
