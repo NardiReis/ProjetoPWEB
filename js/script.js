@@ -77,10 +77,18 @@ function addDragAndDropEvents(item) {
     item.addEventListener('dragend', () => {
         const draggingItem = document.querySelector('.dragging');
         if (draggingItem) {
-            draggingItem.classList.remove('dragging'); // Remover a classe 'dragging' após o drag
-            const newStatus = draggingItem.parentElement.id; // Novo status com base na coluna
+            // Remover todas as classes temporárias (exceto as de status)
+            draggingItem.classList.remove('dragging'); // Remove o status temporário 'dragging'
+
+            // Remove todas as outras classes que não sejam de status
+            draggingItem.classList.remove('expired', 'near-deadline', 'concluido');
+
+            // Agora, aplica o status correto com base na coluna onde o item foi movido
+            const newStatus = draggingItem.parentElement.id; // O ID da coluna é o status
+            draggingItem.classList.add(newStatus); // Adiciona a classe com o novo status
+
+            // Atualiza o status no localStorage
             updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza o status no localStorage
-            draggingItem.classList.remove('dragging'); // Garantir que a classe 'dragging' seja removida de vez
         }
     });
 
@@ -97,6 +105,10 @@ function addDragAndDropEvents(item) {
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
                 const newStatus = column.id; // Novo status baseado no id da coluna
+                draggingItem.classList.remove('dragging'); // Remove o status temporário
+                draggingItem.classList.add(newStatus); // Adiciona o status final
+
+                // Atualiza o status no localStorage
                 updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza o status no localStorage
             }
         });
