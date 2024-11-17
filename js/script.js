@@ -144,4 +144,4 @@ function setColorBasedOnDate(item, date, status) {
     }
 }
 
-loadItems();
+document.addEventListener('DOMContentLoaded', loadItems);
