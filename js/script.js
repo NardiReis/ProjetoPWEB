@@ -26,6 +26,7 @@ itemForm.addEventListener('submit', (e) => {
     addItem(item);
     saveItem(item);
     itemForm.reset();
+    console.log('Item adicionado e salvo:', item); // Log de depuração
 });
 
 function addItem(item) {
@@ -92,12 +93,14 @@ function updateItemStatus(id, status) {
     });
     localStorage.setItem('items', JSON.stringify(updatedItems));
     loadItems();
+    console.log('Status atualizado:', id, status); // Log de depuração
 }
 
 function saveItem(item) {
     const items = JSON.parse(localStorage.getItem('items')) || [];
     items.push(item);
     localStorage.setItem('items', JSON.stringify(items));
+    console.log('Itens salvos no localStorage:', items); // Log de depuração
 }
 
 function loadItems() {
@@ -106,6 +109,7 @@ function loadItems() {
     items.forEach(item => {
         addItem(item);
     });
+    console.log('Itens carregados do localStorage:', items); // Log de depuração
 }
 
 function deleteItem(id) {
@@ -113,6 +117,7 @@ function deleteItem(id) {
     const updatedItems = items.filter(item => item.id != id);
     localStorage.setItem('items', JSON.stringify(updatedItems));
     document.querySelector(`[data-id='${id}']`).remove();
+    console.log('Item deletado:', id); // Log de depuração
 }
 
 searchInput.addEventListener('input', (e) => {
