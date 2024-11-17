@@ -77,9 +77,10 @@ function addDragAndDropEvents(item) {
     item.addEventListener('dragend', () => {
         const draggingItem = document.querySelector('.dragging');
         if (draggingItem) {
-            draggingItem.classList.remove('dragging');
+            draggingItem.classList.remove('dragging'); // Remover a classe 'dragging' após o drag
             const newStatus = draggingItem.parentElement.id; // Novo status com base na coluna
             updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza o status no localStorage
+            draggingItem.classList.remove('dragging'); // Garantir que a classe 'dragging' seja removida de vez
         }
     });
 
