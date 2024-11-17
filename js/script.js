@@ -102,6 +102,7 @@ function saveItem(item) {
 
 function loadItems() {
     const items = JSON.parse(localStorage.getItem('items')) || [];
+    clearColumns();
     items.forEach(item => {
         addItem(item);
     });
@@ -142,6 +143,12 @@ function setColorBasedOnDate(item, date, status) {
     } else if (diffDays < 0) {
         item.classList.add('expired');
     }
+}
+
+function clearColumns() {
+    itensConteudo.innerHTML = '';
+    itensProgresso.innerHTML = '';
+    itensConcluido.innerHTML = '';
 }
 
 document.addEventListener('DOMContentLoaded', loadItems);
