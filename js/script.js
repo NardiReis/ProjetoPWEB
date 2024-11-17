@@ -45,6 +45,7 @@ function addItem(item) {
         <p>Data de Vencimento: ${item.dataVencimento}</p>
         <p>Responsáveis: ${item.responsaveis}</p>
         <button onclick="deleteItem(${item.id})">🗑️</button>
+        <button2 onclick="editItem(${item.id})">✏️</button2>
     `;
     setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
     appendItemToColumn(itemDiv, item.status);
@@ -109,7 +110,6 @@ function saveItem(item) {
 }
 
 function loadItems() {
-
     const items = JSON.parse(localStorage.getItem('items')) || [];
     items.forEach(item => {
         addItem(item);
@@ -121,6 +121,19 @@ function deleteItem(id) {
     const updatedItems = items.filter(item => item.id != id);
     localStorage.setItem('items', JSON.stringify(updatedItems));
     document.querySelector(`[data-id='${id}']`).remove();
+}
+
+function editItem(id) {
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    const item = items.find(item => item.id == id);
+    if (item) {
+        document.getElementById('titulo').value = item.titulo;
+        document.getElementById('descricao').value = item.descricao;
+        document.getElementById('prioridade').value = item.prioridade;
+        document.getElementById('data-vencimento').value = item.dataVencimento;
+        document.getElementById('responsaveis').value = item.responsaveis;
+        deleteItem(id);
+    }
 }
 
 searchInput.addEventListener('input', (e) => {
