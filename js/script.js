@@ -88,11 +88,11 @@ function updateItemStatus(id, status) {
     const updatedItems = items.map(item => {
         if (item.id == id) {
             item.status = status;
+            setColorBasedOnDate(document.querySelector(`[data-id='${id}']`), item.dataVencimento, status);
         }
         return item;
     });
     localStorage.setItem('items', JSON.stringify(updatedItems));
-    loadItems();
     console.log('Status atualizado:', id, status); // Log de depuração
 }
 
