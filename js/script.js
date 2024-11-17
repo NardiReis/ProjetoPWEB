@@ -36,6 +36,14 @@ itemForm.addEventListener('submit', (e) => {
 
 // Função para adicionar um item à coluna correta
 function addItem(item) {
+    const itemDiv = createItemElement(item);
+    setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
+    appendItemToColumn(itemDiv, item.status);
+    addDragAndDropEvents(itemDiv);
+}
+
+// Função para criar o HTML do item
+function createItemElement(item) {
     const itemDiv = document.createElement('div');
     itemDiv.classList.add('item');
     itemDiv.setAttribute('draggable', 'true');
@@ -48,12 +56,10 @@ function addItem(item) {
         <p>Responsáveis: ${item.responsaveis}</p>
         <button onclick="deleteItem(${item.id})">🗑️</button>
     `;
-    setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
-    appendItemToColumn(itemDiv, item.status);
-    addDragAndDropEvents(itemDiv);
+    return itemDiv;
 }
 
-// Função para determinar em qual coluna o item deve ser adicionado
+// Função para adicionar o item à coluna correta com base no status
 function appendItemToColumn(item, status) {
     switch (status) {
         case 'conteudo-estudar':
@@ -77,18 +83,11 @@ function addDragAndDropEvents(item) {
     item.addEventListener('dragend', () => {
         const draggingItem = document.querySelector('.dragging');
         if (draggingItem) {
-            // Remover todas as classes temporárias (exceto as de status)
             draggingItem.classList.remove('dragging'); // Remove o status temporário 'dragging'
-
-            // Remove todas as outras classes que não sejam de status
-            draggingItem.classList.remove('expired', 'near-deadline', 'concluido');
-
-            // Agora, aplica o status correto com base na coluna onde o item foi movido
-            const newStatus = draggingItem.parentElement.id; // O ID da coluna é o status
-            draggingItem.classList.add(newStatus); // Adiciona a classe com o novo status
-
-            // Atualiza o status no localStorage
-            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza o status no localStorage
+            // Atualiza o status do item baseado na coluna em que ele foi movido
+            const newStatus = draggingItem.parentElement.id; // Pega o id da coluna (status)
+            draggingItem.classList.add(newStatus); // Adiciona o status da coluna
+            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza no localStorage
         }
     });
 
@@ -107,9 +106,7 @@ function addDragAndDropEvents(item) {
                 const newStatus = column.id; // Novo status baseado no id da coluna
                 draggingItem.classList.remove('dragging'); // Remove o status temporário
                 draggingItem.classList.add(newStatus); // Adiciona o status final
-
-                // Atualiza o status no localStorage
-                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza o status no localStorage
+                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualiza no localStorage
             }
         });
     });
@@ -141,26 +138,10 @@ function loadItems() {
 
     // Carrega os itens separadamente para cada coluna com base no status
     items.forEach(item => {
-        appendItemToColumn(createItemElement(item), item.status);
+        const itemDiv = createItemElement(item);
+        setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
+        appendItemToColumn(itemDiv, item.status);
     });
-}
-
-// Função auxiliar para criar o elemento do item (HTML)
-function createItemElement(item) {
-    const itemDiv = document.createElement('div');
-    itemDiv.classList.add('item');
-    itemDiv.setAttribute('draggable', 'true');
-    itemDiv.setAttribute('data-id', item.id);
-    itemDiv.innerHTML = `
-        <h3>${item.titulo}</h3>
-        <p>${item.descricao}</p>
-        <p>Prioridade: ${item.prioridade}</p>
-        <p>Data de Vencimento: ${item.dataVencimento}</p>
-        <p>Responsáveis: ${item.responsaveis}</p>
-        <button onclick="deleteItem(${item.id})">🗑️</button>
-    `;
-    setColorBasedOnDate(itemDiv, item.dataVencimento, item.status);
-    return itemDiv;
 }
 
 // Função para excluir um item
@@ -212,4 +193,5 @@ function clearColumns() {
 
 // Ao carregar a página, carregue os itens do localStorage
 document.addEventListener('DOMContentLoaded', () => {
-    loadItems(); // Carrega os itens do
+    loadItems(); // Carrega os itens do localStorage ao carregar a página
+});
