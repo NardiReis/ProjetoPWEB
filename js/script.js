@@ -71,7 +71,7 @@ function addDragAndDropEvents(item) {
         if (draggingItem) {
             draggingItem.classList.remove('dragging');
             const newStatus = draggingItem.parentElement.id;
-            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualizando o status no localStorage
             console.log('Item movido para:', newStatus); // Log de depuração
         }
     });
@@ -88,8 +88,8 @@ function addDragAndDropEvents(item) {
         column.addEventListener('drop', () => {
             const draggingItem = document.querySelector('.dragging');
             if (draggingItem) {
-                const newStatus = column.id;
-                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+                const newStatus = column.id; // Pegando o novo status baseado na coluna
+                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus); // Atualizando o status do item no localStorage
             }
         });
     });
@@ -101,23 +101,24 @@ function updateItemStatus(id, status) {
 
     if (updatedItem) {
         updatedItem.status = status; // Atualizando o status do item
+        // Salvando os itens atualizados no localStorage
         localStorage.setItem('items', JSON.stringify(items));
-        console.log('Status atualizado:', id, status); // Log de depuração
+        console.log('Status do item atualizado no localStorage:', id, status); // Log de depuração
     }
 }
 
 function saveItem(item) {
     const items = JSON.parse(localStorage.getItem('items')) || [];
-    items.push(item);
-    localStorage.setItem('items', JSON.stringify(items));
+    items.push(item); // Adicionando o novo item ao array
+    localStorage.setItem('items', JSON.stringify(items)); // Salvando no localStorage
     console.log('Itens salvos no localStorage:', items); // Log de depuração
 }
 
 function loadItems() {
     const items = JSON.parse(localStorage.getItem('items')) || [];
-    clearColumns();
+    clearColumns(); // Limpa as colunas antes de carregar os itens
     items.forEach(item => {
-        addItem(item);
+        addItem(item); // Adiciona o item na coluna correspondente ao seu status
     });
     console.log('Itens carregados do localStorage:', items); // Log de depuração
 }
@@ -167,6 +168,6 @@ function clearColumns() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadItems();
+    loadItems(); // Carrega os itens do localStorage ao carregar a página
     console.log('Página carregada e itens carregados do localStorage.'); // Log de depuração
 });
