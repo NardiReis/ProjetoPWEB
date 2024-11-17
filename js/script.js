@@ -1,7 +1,12 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    loadItems();
+    initDragAndDropEvents();
+});
+
 const itemForm = document.getElementById('item-form');
-const itensConteudo = document.getElementById('conteudo-estudar');
-const itensProgresso = document.getElementById('em-progresso');
-const itensConcluido = document.getElementById('concluido');
+const itensConteudo = document.getElementById('itens-conteudo');
+const itensProgresso = document.getElementById('itens-progresso');
+const itensConcluido = document.getElementById('itens-concluido');
 const searchInput = document.getElementById('search');
 const columns = [itensConteudo, itensProgresso, itensConcluido];
 
@@ -20,7 +25,7 @@ itemForm.addEventListener('submit', (e) => {
         prioridade,
         dataVencimento,
         responsaveis,
-        status: 'conteudo-estudar'
+        status: 'itens-conteudo'
     };
 
     addItem(item);
@@ -47,11 +52,11 @@ function addItem(item) {
 }
 
 function appendItemToColumn(item, status) {
-    if (status === 'conteudo-estudar') {
+    if (status === 'itens-conteudo') {
         itensConteudo.appendChild(item);
-    } else if (status === 'em-progresso') {
+    } else if (status === 'itens-progresso') {
         itensProgresso.appendChild(item);
-    } else if (status === 'concluido') {
+    } else if (status === 'itens-concluido') {
         itensConcluido.appendChild(item);
     }
 }
@@ -66,18 +71,22 @@ function addDragAndDropEvents(item) {
         const newStatus = item.parentElement.id;
         updateItemStatus(item.getAttribute('data-id'), newStatus);
     });
+}
 
+function initDragAndDropEvents() {
     columns.forEach(column => {
         column.addEventListener('dragover', (e) => {
             e.preventDefault();
-            const draggingItem = document.querySelector('.dragging');
-            column.appendChild(draggingItem);
         });
 
         column.addEventListener('drop', () => {
             const draggingItem = document.querySelector('.dragging');
-            const newStatus = column.id;
-            updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+            if (column !== draggingItem.parentElement) {
+                column.appendChild(draggingItem);
+                const newStatus = column.id;
+                updateItemStatus(draggingItem.getAttribute('data-id'), newStatus);
+                location.reload(); // Adiciona um refresh na página após o drop
+            }
         });
     });
 }
@@ -91,7 +100,6 @@ function updateItemStatus(id, status) {
         return item;
     });
     localStorage.setItem('items', JSON.stringify(updatedItems));
-    loadItems();
 }
 
 function saveItem(item) {
@@ -101,6 +109,7 @@ function saveItem(item) {
 }
 
 function loadItems() {
+
     const items = JSON.parse(localStorage.getItem('items')) || [];
     items.forEach(item => {
         addItem(item);
@@ -135,7 +144,7 @@ function setColorBasedOnDate(item, date, status) {
 
     item.classList.remove('expired', 'near-deadline', 'concluido');
 
-    if (status === 'concluido') {
+    if (status === 'itens-concluido') {
         item.classList.add('concluido');
     } else if (diffDays <= 3 && diffDays >= 0) {
         item.classList.add('near-deadline');
@@ -143,5 +152,3 @@ function setColorBasedOnDate(item, date, status) {
         item.classList.add('expired');
     }
 }
-
-loadItems();
